@@ -6,6 +6,7 @@ import {
   LinearYAxis,
   LinearYAxisTickSeries
 } from 'reaviz';
+import chroma from 'chroma-js';
 
 
 const MultiCategory = ({ data }) => (
@@ -25,9 +26,9 @@ const MultiCategory = ({ data }) => (
         <BarSeries
           layout="horizontal"
           type="grouped"
-          // colorScheme={chroma
-          //   .scale(['ACB7C9', '418AD7'])
-          //   .colors(2)}
+          colorScheme={chroma
+            .scale(['D8B008', 'E53516'])
+            .colors(2)}
           padding={0.8}
         />
       }

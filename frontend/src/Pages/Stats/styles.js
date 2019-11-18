@@ -15,7 +15,7 @@ export const Container = styled.div`
 export const Wrapper = styled.div`
 	display: flex;
 	align-items: flex-start;
-	justify-content: center;
+  justify-content: center;
 `;
 
 export const MAvatar = styled(Avatar)`
@@ -59,6 +59,17 @@ export const MPaper = styled(Paper)`
   
   width: 100%;
   border-radius: 20px;
+`;
+
+export const BPaper = styled(Paper)`
+  &.my-root-class {
+    background: #333333;
+    margin: 2px;
+    padding: 10px;
+  }
+
+  color: #fff;
+  width: 97%;
 `;
 
 

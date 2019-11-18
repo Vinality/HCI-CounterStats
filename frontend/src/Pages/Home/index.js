@@ -3,6 +3,10 @@ import { Hero, Section } from 'react-landing-page';
 import PrimaryStats from '../../Components/PrimaryStats'
 import BarStats from '../../Components/BarStats';
 import CompareChart from '../../Components/CompareChart';
+import Snackbar from '@material-ui/core/Snackbar';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
+import axios from 'axios';
 import { 
   Title, 
   Subtitle, 
@@ -18,11 +22,59 @@ import {
 } from './styles';
  
 export default function Home(props) {
-  const [playername, setPlayerName] = useState("")
+  const [playername, setPlayerName] = useState("");
+  const [open, setOpen] = useState(false);
   const { history } = props;
+
+  const handleClick = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
+  };
+
+  const handleRedirect =  async () => {
+    try{
+      const response = await axios.get(`http://localhost:8080/check/${playername}`);
+      console.log(response);
+      history.push(`/stats/${playername}`);
+
+    }catch(error) {
+      setOpen(true);
+    }
+  }
 
   return(
     <div>
+       <Snackbar
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        open={open}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        ContentProps={{
+          'aria-describedby': 'message-id',
+        }}
+        message={<span id="message-id">User not found. Try again.</span>}
+        action={[
+          <IconButton
+            key="close"
+            aria-label="close"
+            color="inherit"
+            // className={classes.close}
+            onClick={handleClose}
+          >
+            <CloseIcon />
+          </IconButton>,
+        ]}
+      />
       <Hero
         color="black"
         bg="white"
@@ -34,7 +86,7 @@ export default function Home(props) {
             <Subtitle fontSize={[30]}>Data visualization for player statistics</Subtitle>
             <Search 
               id="standard-search"
-              label="Enter your Steam ID"
+              label="Enter your Steam username"
               type="search"
               margin="normal"
               variant="filled"
@@ -43,7 +95,7 @@ export default function Home(props) {
             <MButton
               variant="contained"
               color="primary"
-              onClick={() => history.push(`/stats/${playername}`)}
+              onClick={handleRedirect}
             >
               Get your stats
             </MButton>

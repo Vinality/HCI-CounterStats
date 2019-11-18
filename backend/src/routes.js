@@ -15,7 +15,6 @@ const findUser = async (userId) => {
     const user = await api.getStats(userId, APP_ID)
 
     return user
-
 }
 
 const findUserId = async (username) => {
@@ -57,8 +56,19 @@ routes.get("/profile/:name", async (req, res) => {
             userProfile: userProfile
         })
     } catch(error) {
-        res.status(404).send({error: 'Usuário não encontrado'})
+        return res.status(404).send({error: 'Usuário não encontrado'})
     }
+})
+
+routes.get("/check/:name", async (req, res) => {
+    try{
+        const userId = await findUserId(req.params.name)
+        const user = await findUser(userId)
+    } catch(error) {
+        return res.status(404).send({error: 'Usuário não encontrado'})
+    }
+
+    return res.status(200).end();
 })
 
 module.exports = routes;

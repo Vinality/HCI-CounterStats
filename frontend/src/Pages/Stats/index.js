@@ -4,6 +4,7 @@ import {
   PlayerProfile,
   MAvatar,
   MPaper,
+  BPaper,
   MTabs,
   Wrapper,
   Background,
@@ -18,13 +19,21 @@ import LatestMatch from '../../Components/LatestMatch';
 import OtherStats from '../../Components/OtherStats';
 import WeaponTable from '../../Components/WeaponTable';
 import MapTable from '../../Components/MapTable';
+import Header from '../../Components/Header';
 import CompareChart from '../../Components/CompareChart';
 import MultiCategory from '../../Components/MultiCategory';
 import Histogram from '../../Components/Histogram';
-import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
-import axios from 'axios'
+import {
+  Breadcrumbs,
+  Typography,
+  Box,
+  Snackbar,
+  IconButton,
+  Link,
+  Tab
+} from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
+import axios from 'axios';
 
 function changeCaseFirstLetter(params) {
   if(typeof params === 'string') {
@@ -61,13 +70,21 @@ export default function Stats(props) {
 
   const [player2Data, setPlayer2Data] =  useState({});
   const [player2Name, setPlayer2Name] = useState("");
-
+  const [open, setOpen] = useState(false);
   const [player1Data, setPlayer1Data] = useState({});
   const [weaponsTable, setWeaponsTable] = useState([]);
   const [mapsTable, setMapsTable] = useState([]);
   const [weaponsChart, setWeaponsChart] = useState([]);
   const [mapsChart, setMapsChart] = useState([]);
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = useState(0);
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
+  };
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -134,14 +151,42 @@ export default function Stats(props) {
   }, [props.match.params.playerid]);
 
   const loadPlayer2 = async () => {
-    const response = await axios.get('http://localhost:8080/profile/' + player2Name);
-    setPlayer2Data(response.data);
+    try {
+      const response = await axios.get('http://localhost:8080/profile/' + player2Name);
+      setPlayer2Data(response.data);
+    } catch(error) {
+      setOpen(true);
+    }
   }
 
   return(
     <Wrapper>
       <Background />
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        open={open}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        ContentProps={{
+          'aria-describedby': 'message-id',
+        }}
+        message={<span id="message-id">User not found. Try again.</span>}
+        action={[
+          <IconButton
+            key="close"
+            aria-label="close"
+            color="inherit"
+            onClick={handleClose}
+          >
+            <CloseIcon />
+          </IconButton>,
+        ]}
+      />
       <Container>
+        <Header />
         {player1Data.userProfile && <PlayerProfile>
           <MAvatar 
             alt="fragman" 
@@ -150,7 +195,8 @@ export default function Stats(props) {
           />
 
           <Title>{player1Data.userProfile.username}</Title>
-        </PlayerProfile>}
+          </PlayerProfile>
+        }
         <MPaper classes={{ root: 'my-root-class' }}>
           <MTabs
             classes={{ root: 'my-root-class' }}

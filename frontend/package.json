@@ -8,6 +8,7 @@
     "@material-ui/icons": "^4.4.3",
     "@rebass/preset": "^4.0.5",
     "axios": "^0.19.0",
+    "chroma-js": "^2.1.0",
     "emotion-theming": "^10.0.19",
     "react": "^16.10.2",
     "react-data-table-component": "^3.9.0",
